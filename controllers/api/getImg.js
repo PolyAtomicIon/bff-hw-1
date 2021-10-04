@@ -1,11 +1,13 @@
 const db = require('../../db');
 const path = require('path')
+const fs = require('fs')
 
 module.exports = async(req, res) => {
     const imgId = req.params.id;
 
-    let { originalUrl } = await db.findOne(imgId).toPublicJSON();
+    let { originalUrl } = db.findOne(imgId).toPublicJSON();
 
-    res.set('content-type', 'image/*');
-    return res.download(path.resolve(originalUrl));
+    res.setHeader('Content-type', 'image/jpeg');
+    const fileStream = fs.createReadStream(path.resolve(originalUrl));
+    fileStream.pipe(res);
 };

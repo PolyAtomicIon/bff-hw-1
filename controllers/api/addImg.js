@@ -1,6 +1,8 @@
 const db = require('../../db');
 const Img = require('../../Img');
 const { BadRequestApiError } = require('../../validators/errors/ApiError');
+const path = require('path')
+const fs = require('fs')
 
 module.exports = async(req, res, next) => {
     try {
@@ -16,7 +18,9 @@ module.exports = async(req, res, next) => {
 
         await db.insert(imgFile, file);
 
-        return res.json(imgFile.toPublicJSON());
+        res.setHeader('Content-type', 'image/jpeg');
+        const fileStream = fs.createReadStream(path.resolve(imgFile.toPublicJSON().originalUrl));
+        fileStream.pipe(res);
     } catch (err) {
         return next(err);
     }
