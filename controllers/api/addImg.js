@@ -18,9 +18,8 @@ module.exports = async(req, res, next) => {
 
         await db.insert(imgFile, file);
 
-        res.setHeader('Content-type', 'image/jpeg');
-        const fileStream = fs.createReadStream(path.resolve(imgFile.toPublicJSON().originalUrl));
-        fileStream.pipe(res);
+
+        return res.json({ id });
     } catch (err) {
         return next(err);
     }
